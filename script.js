@@ -1,14 +1,14 @@
 var menuIcon = document.querySelector(".menu-icon");
 var sidebar = document.querySelector(".sidebar");
 var container = document.querySelector(".container");
-
+let currentid = "";
 menuIcon.onclick = function()
 {
   sidebar.classList.toggle("small-sidebar");
   container.classList.toggle("large-container");
 }
 
-const API_KEY = "AIzaSyBlAeOvlIx1qxy8lk4KT-jFWVU_5ntgejk";
+const API_KEY = "AIzaSyC08dTXZ8u4nGDkLLopBBuPvTEpiuEzrvY";
 const BASE_URL = "https://www.googleapis.com/youtube/v3";
 
 async function fetchVideos(searchQuery, maxResults) {
@@ -19,6 +19,15 @@ async function fetchVideos(searchQuery, maxResults) {
   const data = await response.json();
   console.log(data.items);
   rendervideo(data.items);
+}
+window.addEventListener("load",()=> 
+{
+  fetchVideos("/",20);
+});
+function navigateToVideoDetails(videoId) {
+  // document.cookie = `id=${videoId}; path=/videoplayer.html`;
+  currentid = videoId;
+  window.location.href = "http://127.0.0.1:5500/videoplayer.html";
 }
 
 function rendervideo(videoarr)
@@ -31,20 +40,20 @@ function rendervideo(videoarr)
        mdiv.className = "vid-list";
        console.log(item.id.videoId);
        mdiv.id = item.id.videoId;
-       mdiv.innerHTML = `<div class="vid-click" ><img src="images/thumbnail1.png" class="thumbnail" alt=""
+       mdiv.innerHTML = `<div class="vid-click" ><img src="${item.snippet.thumbnails.high.url}" class="thumbnail" alt="thumbnail"
      />
      <div class="flex-div">
-       <img src="images/Jack.png" alt="" />
+       <img src="${item.channelLogo}" alt="Channel Logo" />
        <div class="vid-info">
-           <p>Best channel to learn coding that help you to be a web
-               developer</p>
+           <p>${item.snippet.description}</p>
          </div></div></div>
          <div class="vid-info-1">
-           <p>Easy Tutorials</p>
-           <p>15k Views &bull; 2 days</p>
+           <p>${item.snippet.channelTitle}</p>
+           <p>15k Views .  ${item.snippet.publishTime}</p>
          </div>`;
          mdiv.addEventListener("click",(e)=>{
           e.preventDefault();
+          navigateToVideoDetails(item.id.videoId);
        });
      listcontainer.appendChild(mdiv);
    });
