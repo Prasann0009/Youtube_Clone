@@ -1,6 +1,7 @@
 var menuIcon = document.querySelector(".menu-icon");
 var sidebar = document.querySelector(".sidebar");
 var container = document.querySelector(".container");
+const listcontainer = document.querySelector(".list-container");
 
 let currentid = "";
 menuIcon.onclick = function()
@@ -9,22 +10,51 @@ menuIcon.onclick = function()
   container.classList.toggle("large-container");
 }
 
-let API_KEY = "AIzaSyC08dTXZ8u4nGDkLLopBBuPvTEpiuEzrvY";
+let API_KEY = "AIzaSyDXQ7oNa6NQjioMflMO51VfrIX7ohnPTW8";
 let BASE_URL = "https://www.googleapis.com/youtube/v3";
+let video_http = "https://www.googleapis.com/youtube/v3/videos?";
+let channel_http = "https://www.googleapis.com/youtube/v3/channels?";
 
-// async function fetchVideos(searchQuery, maxResults) {
-   
-//   const response = await fetch(
-//     `${BASE_URL}/search?key=${API_KEY}&q=${searchQuery}&maxResults=${maxResults}&part=snippet`
-//   );
-//   const data = await response.json();
-//   console.log(data.items);
-//   rendervideo(data.items);
+async function fetchVideos(searchQuery, maxResults) {
+  
+  const response = await fetch(
+    `${BASE_URL}/search?key=${API_KEY}&q=${searchQuery}&maxResults=${maxResults}&part=snippet`
+  );
+  const data = await response.json();
+  // console.log(data);
+  // rendervideo(data.items); 
+  listcontainer.innerHTML = "";
+      data.items.forEach((item)=>{
+        console.log(item);
+         getChannelIcon(item);
+      })
+  
+}
+// function fetchVideos(searchQuery,maxR){
+//     fetch(
+//     video_http + new URLSearchParams({
+//       part : "snippet,contentDetails,statistics,player", 
+//       q: searchQuery,   
+//       chart : "mostPopular",
+//       maxResults : maxR,
+//       regionCode : "IN",
+//       key : API_KEY,
+//     })
+// )
+// .then((res) => res.json())
+// .then((data)=>{
+//   listcontainer.innerHTML = "";
+//   data.items.forEach((item)=>{
+//     console.log(item);
+//      getChannelIcon(item);
+//   })
+// })
+// .catch((err) => console.log(err));
 // }
-// window.addEventListener("load",()=> 
-// {
-//   fetchVideos("mostpopular",20);
-// });
+window.addEventListener("load",()=> 
+{
+  fetchVideos("mostpopular",20);
+});
 // function navigateToVideoDetails(videoId) {
 //   // document.cookie = `id=${videoId}; path=/videoplayer.html`;
 //   currentid = videoId;
@@ -33,7 +63,7 @@ let BASE_URL = "https://www.googleapis.com/youtube/v3";
 
 // function rendervideo(videoarr)
 // {
-//    const listcontainer = document.querySelector(".list-container");
+//   //  const listcontainer = document.querySelector(".list-container");
 //    listcontainer.innerHTML = "";
 
 //    videoarr.forEach((item)=>{
@@ -61,33 +91,30 @@ let BASE_URL = "https://www.googleapis.com/youtube/v3";
 
 // }
 
-// document.getElementById("search-form").addEventListener("submit",(e)=>{
-//   e.preventDefault();
-//   const searchinput = document.getElementById("search_input").value;
-//   fetchVideos(searchinput, 20);
-// });
+document.getElementById("search-form").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  const searchinput = document.getElementById("search_input").value;
+  fetchVideos(searchinput, 20);
+});
 
-
-let video_http = "https://www.googleapis.com/youtube/v3/videos?";
-let channel_http = "https://www.googleapis.com/youtube/v3/channels?";
-const listcontainer = document.querySelector(".list-container");
-
-  fetch(
-    video_http + new URLSearchParams({
-      part : "snippet, contentDetails,statistics,player",
-      chart : "mostPopular",
-      maxResults : 20,
-      regionCode : "IN",
-      key : API_KEY,
-    })
-)
-.then((res) => res.json())
-.then((data)=>{
-  data.items.forEach((item)=>{
-     getChannelIcon(item);
-  })
-})
-.catch((err) => console.log(err));
+//   fetch(
+//     video_http + new URLSearchParams({
+//       part : "snippet, contentDetails,statistics,player",
+//       q : 
+//       chart : "mostPopular",
+//       maxResults : 20,
+//       regionCode : "IN",
+//       key : API_KEY,
+//     })
+// )
+// .then((res) => res.json())
+// .then((data)=>{
+//   data.items.forEach((item)=>{
+//     console.log(item);
+//      getChannelIcon(item);
+//   })
+// })
+// .catch((err) => console.log(err));
 
 
 
@@ -108,16 +135,14 @@ const getChannelIcon = (video_data) => {
   
 };
 
-const playVideo = (embedHtml) => {
-  sessionStorage.setItem("videoEmbedHtml",embedHtml);
+const playVideo = (vid) => {
+  sessionStorage.setItem("videoId",vid);
   window.location.href = "videoplayer.html";
 };
 
 const rendervideo = (item) => {
   const mdiv = document.createElement("div");
          mdiv.className = "vid-list";
-        //  console.log(item.id.videoId);
-        //  mdiv.id = item.id.videoId;
          mdiv.innerHTML = `<div class="vid-click" ><img src="${item.snippet.thumbnails.high.url}" class="thumbnail" alt="thumbnail"
        />
        <div class="flex-div">
@@ -130,39 +155,12 @@ const rendervideo = (item) => {
            
            </div>`;
            mdiv.addEventListener("click",()=>{
-                      playVideo(item.player.embedHtml);
+              console.log(item.id.videoId);
+                      playVideo(item.id.videoId);
                 });
            listcontainer.appendChild(mdiv);
 };
-// function rendervideo(videoarr)
-// {
-   
-//    listcontainer.innerHTML = "";
 
-//    videoarr.forEach((item)=>{
-//        const mdiv = document.createElement("div");
-//        mdiv.className = "vid-list";
-//        console.log(item.id.videoId);
-//        mdiv.id = item.id.videoId;
-//        mdiv.innerHTML = `<div class="vid-click" ><img src="${item.snippet.thumbnails.high.url}" class="thumbnail" alt="thumbnail"
-//      />
-//      <div class="flex-div">
-//        <img src="${item.channelLogo}" alt="Channel Logo" />
-//        <div class="vid-info">
-//            <p>${item.snippet.description}</p>
-//          </div></div></div>
-//          <div class="vid-info-1">
-//            <p>${item.snippet.channelTitle}</p>
-//            <p>15k Views .  ${item.snippet.publishTime}</p>
-//          </div>`;
-//          mdiv.addEventListener("click",(e)=>{
-//           e.preventDefault();
-//           navigateToVideoDetails(item.id.videoId);
-//        });
-//      listcontainer.appendChild(mdiv);
-//    });
-
-// }
 
 // async function getVideoStats(videoId){
    
