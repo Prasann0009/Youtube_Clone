@@ -10,7 +10,7 @@ menuIcon.onclick = function()
   container.classList.toggle("large-container");
 }
 
-let API_KEY = "AIzaSyDXQ7oNa6NQjioMflMO51VfrIX7ohnPTW8";
+let API_KEY = "AIzaSyBlAeOvlIx1qxy8lk4KT-jFWVU_5ntgejk";
 let BASE_URL = "https://www.googleapis.com/youtube/v3";
 let video_http = "https://www.googleapis.com/youtube/v3/videos?";
 let channel_http = "https://www.googleapis.com/youtube/v3/channels?";
