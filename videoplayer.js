@@ -15,7 +15,7 @@ window.addEventListener("load",()=>
     }
 });
 
-let API_KEY = "AIzaSyBlAeOvlIx1qxy8lk4KT-jFWVU_5ntgejk";
+let API_KEY = "AIzaSyC08dTXZ8u4nGDkLLopBBuPvTEpiuEzrvY";
 let BASE_URL = "https://www.googleapis.com/youtube/v3";
 let video_http = "https://www.googleapis.com/youtube/v3/videos?";
 let channel_http = "https://www.googleapis.com/youtube/v3/channels?";
