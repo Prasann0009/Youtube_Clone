@@ -1,3 +1,8 @@
+let API_KEY = "AIzaSyAc2yIESuszzAW6WO_YrNbPPjewtlFWkJ8";
+let BASE_URL = "https://www.googleapis.com/youtube/v3";
+let video_http = "https://www.googleapis.com/youtube/v3/videos?";
+let channel_http = "https://www.googleapis.com/youtube/v3/channels?";
+
 var menuIcon = document.querySelector(".menu-icon");
 var sidebar = document.querySelector(".sidebar");
 var container = document.querySelector(".container");
@@ -10,10 +15,7 @@ menuIcon.onclick = function()
   container.classList.toggle("large-container");
 }
 
-let API_KEY = "AIzaSyBlAeOvlIx1qxy8lk4KT-jFWVU_5ntgejk";
-let BASE_URL = "https://www.googleapis.com/youtube/v3";
-let video_http = "https://www.googleapis.com/youtube/v3/videos?";
-let channel_http = "https://www.googleapis.com/youtube/v3/channels?";
+
 
 async function fetchVideos(maxResults) {
   let searchQuery;
@@ -24,6 +26,7 @@ async function fetchVideos(maxResults) {
  else
  {
   searchQuery="mostpopular";
+  sessionStorage.setItem("searchinput",searchQuery);
  }
   const response = await fetch(
     `${BASE_URL}/search?key=${API_KEY}&q=${searchQuery}&maxResults=${maxResults}&part=snippet`
@@ -42,7 +45,6 @@ async function fetchVideos(maxResults) {
 
 window.addEventListener("load",()=> 
 {
-  listcontainer.innerHTML = `<h1 class="loader">Videos are loading.....</h1>`;
   fetchVideos(20);
 });
 
@@ -70,18 +72,19 @@ const getChannelIcon = (video_data) => {
   .then((res) => res.json())
   .then((data) => {
     video_data.channelThunbnail = data.items[0].snippet.thumbnails.default.url;
-    rendervideo(video_data);
+    rendervideo(video_data,video_data.snippet.channelId);
   });
   
 };
 
-const playVideo = (vid) => {
+const playVideo = (vid,channelid) => {
   sessionStorage.setItem("videoId",vid);
+  sessionStorage.setItem("channelid",channelid);
   window.location.href = "videoplayer.html";
 };
 
 
-const rendervideo = (item) => {
+const rendervideo = (item,channelid) => {
   const mdiv = document.createElement("div");
          mdiv.className = "vid-list";
          mdiv.innerHTML = `<div class="vid-click" ><img src="${item.snippet.thumbnails.high.url}" class="thumbnail" alt="thumbnail"
@@ -97,7 +100,11 @@ const rendervideo = (item) => {
            </div>`;
            mdiv.addEventListener("click",()=>{
               console.log(item.id.videoId);
-                      playVideo(item.id.videoId);
+              if(sessionStorage.getItem("channelid"))
+              {
+                sessionStorage.removeItem("channelid");
+              }
+                      playVideo(item.id.videoId,channelid);
                 });
            listcontainer.appendChild(mdiv);
 };
