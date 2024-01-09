@@ -3,6 +3,7 @@ let searchquery = sessionStorage.getItem("searchinput");
 const right_sidebar = document.querySelector(".right-sidebar");
 
 console.log(video_id);
+console.log(searchquery);
 window.addEventListener("load",()=> 
 {
     if(YT)
