@@ -10,8 +10,6 @@ let searchquery = sessionStorage.getItem("searchinput");
 const right_sidebar = document.querySelector(".right-sidebar");
 const vid_description=document.querySelector(".vid-description");
 
-console.log(video_id);
-console.log(searchquery);
 window.addEventListener("load",()=> 
 {
     if(YT)
@@ -22,19 +20,35 @@ window.addEventListener("load",()=>
             videoId : video_id,
         });
         loadComments(video_id);
-    }
+        loadChannelDetails(channelid);
+      }
 });
 
-
+function loadChannelDetails(channelId){
+  fetch(
+    channel_http + 
+    new URLSearchParams({
+      key: API_KEY,
+      part: "snippet",
+      id: channelId,
+    })
+  )
+  .then((res) => res.json())
+  .then((data) => {
+    var channelThumbnail = document.getElementById('channelThumbnail');
+    var channelTitle = document.getElementById('channelTitle');
+  channelTitle.textContent = data.items[0].snippet.title;
+  channelThumbnail.setAttribute('src', data.items[0].snippet.thumbnails.default.url);
+  });
+}
 
 
 async function loadComments(videoId) {
   
-  let endpoint = `${comment_url}?key=${API_KEY}&videoId=${videoId}&maxResults=30&part=snippet`;
+  let endpoint = ${comment_url}?key=${API_KEY}&videoId=${videoId}&maxResults=30&part=snippet;
 
   const response = await fetch(endpoint);
   const result = await response.json();
-  console.log(result);
   result.items.forEach((item) => {
     const repliesCount = item.snippet.totalReplyCount;
     const {
@@ -72,7 +86,7 @@ async function loadComments(videoId) {
 async function fetchVideos1(maxResults) {
  
   const response = await fetch(
-    `${BASE_URL}/search?key=${API_KEY}&q=${searchquery}&maxResults=${maxResults}&part=snippet`
+    ${BASE_URL}/search?key=${API_KEY}&q=${searchquery}&maxResults=${maxResults}&part=snippet
   );
   const data = await response.json();
   // console.log(data);
@@ -109,8 +123,9 @@ const getChannelIcon1 = (video_data) => {
   };
 
 
-  const playVideo1 = (vid) => {
+  const playVideo1 = (vid,channelid) => {
     sessionStorage.setItem("videoId",vid);
+    sessionStorage.setItem("channelid",channelid);
     window.location.href = "videoplayer.html";
   };
   
@@ -125,7 +140,7 @@ const getChannelIcon1 = (video_data) => {
                <p>15k Views</p>
            </div>`;
              mdiv.addEventListener("click",()=>{
-                        playVideo1(item.id.videoId);
+                        playVideo1(item.id.videoId,item.snippet.channelId);
                   });
                   right_sidebar.appendChild(mdiv);
   };
@@ -181,4 +196,3 @@ const getChannelIcon1 = (video_data) => {
 // {
 //     alert("Video not found");
 // }
-
