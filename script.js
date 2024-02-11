@@ -1,4 +1,4 @@
-let API_KEY = "AIzaSyAc2yIESuszzAW6WO_YrNbPPjewtlFWkJ8";
+let API_KEY = "AIzaSyDXQ7oNa6NQjioMflMO51VfrIX7ohnPTW8";
 let BASE_URL = "https://www.googleapis.com/youtube/v3";
 let video_http = "https://www.googleapis.com/youtube/v3/videos?";
 let channel_http = "https://www.googleapis.com/youtube/v3/channels?";
